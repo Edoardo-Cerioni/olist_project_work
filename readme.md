@@ -47,3 +47,6 @@ _orders_products_
 - price FLOAT
 - freight (costo spedizione) FLOAT
 
+## TODO opzionale
+- copia del file in input alla cartella raw (fare in modo che il nome del file sia univoco aggiungendo al nome del file data e ora per esempio )
+- creare database da python

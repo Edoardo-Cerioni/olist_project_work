@@ -1,16 +1,16 @@
 # metodi ETL per products
 
 def extract():
-    print("questo è il metodo EXTRACT")
+    print("questo è il metodo EXTRACT per products")
 
 def transform():
-    print("questo è il metodo TRANSFORM")
+    print("questo è il metodo TRANSFORM per products")
 
 def load():
-    print("questo è il metodo LOAD")
+    print("questo è il metodo LOAD per products")
 
 def main():
-    print("questo è il metodo Main")
+    print("questo è il metodo Main per products")
     extract()
     transform()
     load()
