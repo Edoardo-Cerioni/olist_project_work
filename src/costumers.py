@@ -29,18 +29,32 @@ def load(df):
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
         with conn.cursor() as cur:
             sql = """
-            CREATE TABLE IF NOT EXISTS customers (
+            CREATE TABLE customers (
             pk_customer VARCHAR PRIMARY KEY,
             region VARCHAR,
             city VARCHAR,
             cap VARCHAR
             );
             """
-            cur.execute(sql)
+            try:
+                cur.execute(sql)
+            except psycopg.errors.DuplicateTable as ex:
+                conn.commit()
+                print(ex)
+                domanda = input("Vuoi cancellare la tabella? SI NO ")
+                if domanda == "SI":
+                    # cancellare tabella se risponde si
+                    sqldelete = """DROP TABLE customers"""
+                    cur.execute(sqldelete)
+                    conn.commit()
+                    print("ricreo tabella costumers")
+                    cur.execute(sql)
+
+
             sql = """
             INSERT INTO customers
             (pk_customer, region, city, cap) 
-            VALUES (%s, %s, %s, %s);
+            VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING;
             """
             caricamento_percentuale(df, cur, sql)
 

@@ -47,6 +47,9 @@ _orders_products_
 - price FLOAT
 - freight (costo spedizione) FLOAT
 
-## TODO opzionale
-- copia del file in input alla cartella raw (fare in modo che il nome del file sia univoco aggiungendo al nome del file data e ora per esempio )
-- creare database da python
+## Todo opzionale
+
+- copia del file in input alla cartella raw (fare in modo che il nome del file sia univoco, con data e ora)
+- prima di fare il load creare database da Python
+- controllo di validità per cancellare la tabella (con user e psw)
+- metodo per controllo di validità degli input, oltre a strip() e upper()/lower()
