@@ -1,11 +1,9 @@
-import src.costumers as costumers
-import src.products as products
-import src.orders as order
+import src.customers as customers
+
+
 
 if __name__ == "__main__":
-    df_costumers = costumers.extract()
-    df_costumers = costumers.transform(df_costumers)
-    costumers.load(df_costumers)
-    products.extract()
-    products.transform()
-    products.load()
+    #df_customers = customers.extract()
+    #df_customers = customers.transform(df_customers)
+    #customers.load(df_customers)
+    customers.complete_city_region()
