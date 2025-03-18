@@ -1,22 +1,43 @@
+import os
+
 import pandas as pd
 import datetime
 
+import psycopg
+from dotenv import load_dotenv
+
+load_dotenv()
+host = os.getenv("host")
+dbname = os.getenv("dbname")
+user = os.getenv("user")
+password = os.getenv("password")
+port = os.getenv("port")
 
 
-def readFile():
+
+def read_file():
     isvalid = False
     df = pd.DataFrame()
     while not isvalid:
-        path_file = input("inserire il path del file: ")
+        path = input("Inserisci il path del file:\n").strip()
         try:
-            df = pd.read_csv(path_file)
+            path_list = path.split(".")
+
+            if path_list[-1] == "csv" or path_list[-1] == "txt":
+                df = pd.read_csv(path)
+            elif path_list[-1] == "xlsx" or path_list[-1] == "xls":
+                df = pd.read_excel(path)
+            else:
+                df = pd.read_json(path)
+
+        #puoi usare una lista che è + DRY!
         except FileNotFoundError as ex:
             print(ex)
         except OSError as ex:
             print(ex)
         else:
+            print("Path inserito correttamente: procedo all'...")
             isvalid = True
-            print("\n\n file estratto con successo\n\n")
     else:
         return df
 
@@ -49,17 +70,14 @@ def caricamento_barra(df,cur,sql):
     print("\r│" + "█" * Tmax + "│ 100% Completato!")
     print("└" + "─" * Tmax + "┘")
 
-
-
-
 def format_cap(df):
     #if "cap" in df.columns:
-    df["cap"].astype(str).str.zfill(5)
+    df["cap"] = df["cap"].apply(lambda cap: str(int(cap)).zfill(5) if cap == cap else cap)
     print("Ciao sono nel format_cap")
     return df
 
 def format_string(df, cols):
-    print(df[cols])
+    #print(df[cols])
     for col in cols:
         df[col] = df[col].str.strip()
         df[col] = df[col].str.replace("[0-9]", "",regex=True)
@@ -95,13 +113,65 @@ def save_processed(df):
         directory_name = "data/processed/"
     df.to_csv(directory_name + file_name, index = False)
 
+def format_region():
+    nome_tabella = input("inserire nome tabella da modificare").strip().lower()
+    with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
+        with conn.cursor() as cur:
+            sql=f"""
+                UPDATE {nome_tabella} 
+                SET region = 'Valle d''Aosta'
+                WHERE region = 'Valled''Aosta'
+                RETURNING *
+                """
+            cur.execute(sql)
+            print("Record con regione aggiornata \n")
+            for record in cur:
+                print(record)
+
+            sql = f"""
+                 UPDATE {nome_tabella} 
+                 SET region = 'Emilia-Romagna'
+                 WHERE region = 'Emilia Romagna'
+                 RETURNING *
+                 """
+            cur.execute(sql)
+            print("Record con regione aggiornata \n")
+            for record in cur:
+                print(record)
+
+            sql = f"""
+                 UPDATE {nome_tabella} 
+                 SET region = 'Trentino-AltoAdige'
+                 WHERE region = 'Trentino Alto Adige'
+                 RETURNING *
+                 """
+            cur.execute(sql)
+            print("Record con regione aggiornata \n")
+            for record in cur:
+                print(record)
+
+            sql = f"""
+                UPDATE {nome_tabella} 
+                SET region = 'Friuli-VeneziaGiulia'
+                WHERE region = 'Friuli Venezia Giulia'
+                RETURNING *
+                """
+            cur.execute(sql)
+            print("Record con regione aggiornata \n")
+            for record in cur:
+                print(record)
+
 
 
 
 #DEBUG
 if __name__ == "__main__":
-    df = readFile()
-    df = format_string(df, ["region", "city"])
-    print (df)
+    df = read_file()
+    #df = format_string(df, ["region", "city"])
+    #print("file di partenza")
+    #print(df)
+    format_cap(df)
+    #print("dati con CAP formattato ")
+    #print (df)
     #checkNull(df) #modifica di default la prima colonna a meno che non gli si da la lista es [customers_id]
     #save_processed(df)
