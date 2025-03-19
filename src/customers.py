@@ -49,7 +49,7 @@ def load(df):
             except psycopg.errors.DuplicateTable as ex:
                 conn.commit()
                 print(ex)
-                domanda = input("Vuoi sostituire la tabella? SI NO(aggiunge i valori della tabella a quella originale) ")
+                domanda = input("Vuoi sostituire la tabella? SI | NO (aggiunge i valori della tabella a quella originale) ").strip.upper
                 if domanda == "SI":
                     # cancellare tabella se risponde si
                     sqldelete = """DROP TABLE customers"""

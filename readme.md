@@ -17,12 +17,13 @@ _costumers_
 - cap VARCHAR
 
 _categories_
-- pk_categories SERIAL
-- name (in inglese) VARCHAR
+- pk_category SERIAL
+- name_eng VARCHAR
+- name_it VARCHAR
 
 _products_
 - pk_product VARCHAR
-- fk_category INTEGER
+- fk_category INTGER
 - name_length INTEGER (errore ortografico)
 - description_length INTEGER
 - imgs_qty INTEGER
@@ -35,11 +36,11 @@ _orders_
 - delivered_timestamp TIMESTAMP
 - estimated_date DATE
 
-_sellers_
+_sellers_( in forse magari venerdì)
 - pk_seller VARCHAR
 - region VARCHAR
 
-_orders_products_
+_orders_products_ (prodotti per ciascun ordine)
 - pk_order_product SERIAL
 - fk_order VARCHAR
 - fk_product VARCHAR
@@ -49,6 +50,7 @@ _orders_products_
 
 ## Todo
 19-20 marzo
+-riaggiornare etl di customers_cap con customers_cap2
 - etl dei vari file csv - riguardasi bene insieme le varie colonne e categorie
 prendere come riferimento le categorie di categories.load.py e creare un metodo tipo quello che abbiamo usato per sistemare region con il cap
 
@@ -111,5 +113,6 @@ Tabella dettagliata: informazioni su ordini e venditori.
 ## IDEE
 - creare un metodo dinamico in grado di sistemare e aggiornare tutte le categorie seguendo modello amazon ecc
 - menu di ricerca dei prodotti e delle categorie
+- vendite in proporzione alla popolazione (pro capite...percentuale per regione ecc)
 
 
