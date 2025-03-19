@@ -32,7 +32,7 @@ def transform(df):
 
 def load(df):
     print("questo è il metodo LOAD per costumers")
-    df["last_updated"] = datetime.datetime.now()
+    df["last_updated"] = datetime.datetime.now().isoformat(sep=" ", timespec="seconds")
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
         with conn.cursor() as cur:
             sql = """
@@ -74,9 +74,10 @@ def complete_city_region():
         with conn.cursor() as cur:
 
 
-            sql = """
+            sql = f"""
                 UPDATE customers AS c1 
-                SET region = c2.region
+                SET region = c2.region,
+                last_updated = '{datetime.datetime.now().isoformat(sep=" ", timespec="seconds")}'
                 FROM customers AS c2
                 WHERE c1.cap = c2.cap
                 AND c1.cap <> 'NaN'
@@ -92,17 +93,18 @@ def complete_city_region():
             for record in cur:
                 print (record)
 
-            sql = """
-                            UPDATE customers AS c1 
-                            SET city = c2.city
-                            FROM customers AS c2
-                            WHERE c1.cap = c2.cap
-                            AND c1.cap <> 'NaN'
-                            AND c2.cap <> 'NaN'
-                            AND c1.city = 'NaN'
-                            AND c2.city <> 'NaN'
-                            RETURNING *
-                            ; """
+            sql = f"""
+                 UPDATE customers AS c1 
+                 SET city = c2.city,
+                 last_updated = '{datetime.datetime.now().isoformat(sep=" ", timespec="seconds")}'
+                 FROM customers AS c2
+                 WHERE c1.cap = c2.cap
+                 AND c1.cap <> 'NaN'
+                 AND c2.cap <> 'NaN'
+                 AND c1.city = 'NaN'
+                 AND c2.city <> 'NaN'
+                 RETURNING *
+                 ; """
 
             cur.execute(sql)
 
