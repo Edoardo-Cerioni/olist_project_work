@@ -58,8 +58,8 @@ REFERENCES olist_it_products(pk_product_id),
 19-20 marzo
 -riaggiornare etl di customers_cap con customers_cap2 OK
 
-- etl dei vari file csv (risolvere problema load orders_products e caricare orders)
-- fare il push di tutto il lavoro una volta finito e comunicarlo alla squadra
+- etl dei vari file csv OK
+- fare il push di tutto il lavoro una volta finito e comunicarlo alla squadra OK
 
 - pensare a qualche idea carina da implementare eventualmente
 
@@ -71,16 +71,17 @@ quali grafici è più opportuno usare?
 
 21 marzo
 - postsgreSQL
-
-22-23-24 marzo
-- jupyter(forse)
-- powerBI
 Definisci le relazioni tra le tabelle
 Customers ↔ Orders (pk_customer → fk_customer)
 Orders ↔ Orders_Products (pk_order → fk_order)
 Orders_Products ↔ Products (fk_product → pk_product)
 Orders_Products ↔ Sellers (fk_seller → pk_seller)
 Products ↔ Categories (fk_category → pk_category)
+
+22-23-24 marzo
+- jupyter(forse)
+- powerBI
+
 
 METRICHE PRINCIPALI
 ## Analisi delle vendite
