@@ -27,7 +27,7 @@ def transform(df):
     df = common.checkNull(df,["customer_id"])
     df = common.format_string(df, ["region", "city"])
     df = common.format_cap(df)
-    #common.save_processed(df)
+    common.save_processed(df)
     return df
 
 def load(df):
@@ -49,7 +49,7 @@ def load(df):
             except psycopg.errors.DuplicateTable as ex:
                 conn.commit()
                 print(ex)
-                domanda = input("Vuoi sostituire la tabella? SI | NO (aggiunge i valori della tabella a quella originale) ").strip.upper
+                domanda = input("Vuoi sostituire la tabella? SI | NO (aggiunge i valori della tabella a quella originale) ").strip().upper()
                 if domanda == "SI":
                     # cancellare tabella se risponde si
                     sqldelete = """DROP TABLE customers"""

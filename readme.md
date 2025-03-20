@@ -48,11 +48,18 @@ _orders_products_ (prodotti per ciascun ordine)
 - price FLOAT
 - freight (costo spedizione) FLOAT
 
+FOREIGN KEY(fk_order_id)
+REFERENCES olist_it_orders(pk_order_id),
+FOREIGN KEY(fk_product_id)
+REFERENCES olist_it_products(pk_product_id),
+
+
 ## Todo
 19-20 marzo
--riaggiornare etl di customers_cap con customers_cap2
-- etl dei vari file csv - riguardasi bene insieme le varie colonne e categorie
-prendere come riferimento le categorie di categories.load.py e creare un metodo tipo quello che abbiamo usato per sistemare region con il cap
+-riaggiornare etl di customers_cap con customers_cap2 OK
+
+- etl dei vari file csv (risolvere problema load orders_products e caricare orders)
+- fare il push di tutto il lavoro una volta finito e comunicarlo alla squadra
 
 - pensare a qualche idea carina da implementare eventualmente
 
@@ -114,5 +121,6 @@ Tabella dettagliata: informazioni su ordini e venditori.
 - creare un metodo dinamico in grado di sistemare e aggiornare tutte le categorie seguendo modello amazon ecc
 - menu di ricerca dei prodotti e delle categorie
 - vendite in proporzione alla popolazione (pro capite...percentuale per regione ecc)
+- fare format string su product e categories
 
 
