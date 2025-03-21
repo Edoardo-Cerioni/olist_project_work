@@ -85,8 +85,6 @@ def load(df):
 
 
 def delete_invalid_orders():
-    #TODO cancellare da orders_products i record che hanno status delivered e delivered_time nulla in orders
-    #TODO cancellare da orders i record che hanno status delivered e delivered_time nulla
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
         with conn.cursor() as cur:
 
