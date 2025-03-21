@@ -31,7 +31,7 @@ def transform(df):
     return df
 
 def load(df):
-    print("questo è il metodo LOAD per costumers")
+    print("questo è il metodo LOAD per customers")
     df["last_updated"] = datetime.datetime.now().isoformat(sep=" ", timespec="seconds")
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
         with conn.cursor() as cur:
@@ -52,7 +52,7 @@ def load(df):
                 domanda = input("Vuoi sostituire la tabella? SI | NO (aggiunge i valori della tabella a quella originale) ").strip().upper()
                 if domanda == "SI":
                     # cancellare tabella se risponde si
-                    sqldelete = """DROP TABLE customers"""
+                    sqldelete = """DROP TABLE customers CASCADE"""
                     cur.execute(sqldelete)
                     conn.commit()
                     print("ricreo tabella costumers")
@@ -111,6 +111,8 @@ def complete_city_region():
             print("visualizzazione record con città aggiornata")
             for record in cur:
                 print(record)
+
+            conn.commit()
 
 
 #DEBUG

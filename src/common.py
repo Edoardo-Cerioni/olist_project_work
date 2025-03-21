@@ -37,7 +37,7 @@ def read_file():
         except OSError as ex:
             print(ex)
         else:
-            print("Path inserito correttamente: procedo all'...")
+            print("Path inserito correttamente: procedo alla lettura del file")
             isvalid = True
     else:
         return df
@@ -74,7 +74,6 @@ def caricamento_barra(df,cur,sql):
 def format_cap(df):
     #if "cap" in df.columns:
     df["cap"] = df["cap"].apply(lambda cap: str(int(cap)).zfill(5) if cap == cap else cap)
-    print("Ciao sono nel format_cap")
     return df
 
 def format_string(df, cols):
@@ -87,16 +86,16 @@ def format_string(df, cols):
     return df
 
 def dropduplicates (df):
-    print(df.duplicated().sum())
+    #print(df.duplicated().sum())
     df.drop_duplicates(inplace = True)
     return df
 
 def checkNull(df, subset=""):
-    print(f"Valori nulli per colonna:\n {df.isnull().sum()} \n")
+    print(f"Valori nulli per colonna:\n{df.isnull().sum()}\n")
     subset = df.columns.tolist()[0] if not subset else subset
     df.dropna(subset=subset, inplace=True, ignore_index=True)
     #df = fillNull(df)
-    print(df)
+    #print(df)
     return df
 
 def fillNull(df):
@@ -104,10 +103,11 @@ def fillNull(df):
     return df
 
 def save_processed(df):
+    print("Salvo le modifiche in un file csv nella cartella processed")
     name = input("Qual'è il nome del file? ").strip().lower()
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = name + "_processed" + "_datetime" + timestamp + ".csv"
-    print(file_name, end="\n\n")
+    print(f"creo il file {file_name}", end="\n\n")
     if __name__ == "__main__":
         directory_name = "../data/processed/"
     else:
@@ -115,7 +115,7 @@ def save_processed(df):
     df.to_csv(directory_name + file_name, index = False)
 
 def format_region():
-    nome_tabella = input("inserire nome tabella da modificare").strip().lower()
+    nome_tabella = input("inserire nome tabella da modificare ").strip().lower()
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
         with conn.cursor() as cur:
 

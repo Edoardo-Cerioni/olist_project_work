@@ -14,12 +14,11 @@ port = os.getenv("port")
 
 def extract():
     df = common.read_file()
-    print(df.dtypes)
-    print(f"Valori nulli per colonna:\n {df.isnull().sum()} \n")
     return df
 
 def transform(df):
     df = common.dropduplicates(df)
+    df = common.checkNull(df, ["pk_category"])
     return df
 
 def load(df):
@@ -42,7 +41,7 @@ def load(df):
                 print(ex)
                 domanda = input("Desideri cancellare questa tabella? SI/NO").upper()
                 if domanda == "SI":
-                    sql_delete ="""DROP TABLE categories"""
+                    sql_delete ="""DROP TABLE categories CASCADE"""
                     cur.execute(sql_delete)
                     conn.commit()
                     print("Ricreando la tabella categories")
@@ -61,7 +60,7 @@ def dump():
             sql = "SELECT DISTINCT macro_category_id, macro_category_name_english FROM categories"
             cur.execute(sql)
             df = pd.DataFrame(cur, columns= ["pk_category", "name"])
-            df.to_csv("../data/processed/categories_processed.csv", index = False)
+            df.to_csv("../data/processed/categories_clean.csv", index = False)
 
 
 if __name__ == "__main__":

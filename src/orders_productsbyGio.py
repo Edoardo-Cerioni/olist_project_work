@@ -66,7 +66,7 @@ def load(df):
                 domanda = input("Vuoi sostituire la tabella? SI | NO (aggiunge i valori della tabella a quella originale) ").strip().upper()
                 if domanda == "SI":
                     # cancellare tabella se risponde si
-                    sqldelete = """DROP TABLE orders_products;"""
+                    sqldelete = """DROP TABLE orders_products CASCADE;"""
                     cur.execute(sqldelete)
                     conn.commit()
                     print("Recreating orders_products table")
@@ -82,6 +82,32 @@ def load(df):
             conn.commit()
             #except psycopg.OperationalError as e:
                 #print(f"Error connecting to database: {e}")
+
+
+def delete_invalid_orders():
+    #TODO cancellare da orders_products i record che hanno status delivered e delivered_time nulla in orders
+    #TODO cancellare da orders i record che hanno status delivered e delivered_time nulla
+    with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
+        with conn.cursor() as cur:
+
+            sql = f"""DELETE FROM orders_products 
+            WHERE fk_order IN (
+            SELECT pk_order FROM orders 
+            WHERE delivered_timestamp IS NULL 
+            AND status = 'delivered'
+            ); """
+
+            cur.execute(sql)
+
+            sql = f"""DELETE FROM orders  
+            WHERE delivered_timestamp IS NULL 
+            AND status = 'delivered'
+            ; """
+
+            cur.execute(sql)
+
+
+            conn.commit()
 
 if __name__ == "__main__":
     main()

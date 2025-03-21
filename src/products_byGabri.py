@@ -18,20 +18,14 @@ port = os.getenv("port")
 def extract():
     print("questo è il metodo EXTRACT per products")
     df = common.read_file()
-    print(df.dtypes)
-    print(f"Valori nulli per colonna:\n {df.isnull().sum()} \n")
     return df
 
 def transform(df):
     print("questo è il metodo TRANSFORM per products")
-    #df = common.dropduplicates(df)
-    #df = common.checkNull(df,["product_id"])
-    #df["fk_category"] = df["fk_category"].fillna(23).astype(int)
-    print(df.dtypes)
-    #df[["product_name_lenght", "product_description_lenght", "product_photos_qty"]] = (
-        #df[["product_name_lenght", "product_description_lenght", "product_photos_qty"]].fillna(value="0", axis=0)
+    df = common.dropduplicates(df)
+    df = common.checkNull(df,["pk_product"])
 
-    #common.save_processed(df)
+    common.save_processed(df)
     return df
 
 def load(df):
@@ -63,7 +57,7 @@ def load(df):
                 domanda = input("Vuoi sostituire la tabella? SI NO(aggiunge i valori della tabella a quella originale) ").strip().upper()
                 if domanda == "SI":
                     # cancellare tabella se risponde si
-                    sql_delete = """DROP TABLE products"""
+                    sql_delete = """DROP TABLE products CASCADE"""
                     cur.execute(sql_delete)
                     conn.commit()
                     print("ricreo tabella products")

@@ -4,7 +4,6 @@ import src.customers as customers
 import src.categories_byAda as categories
 import src.products_byGabri as products
 import src.orders_byGabri as orders
-
 import src.orders_productsbyGio as orders_products
 
 
@@ -19,7 +18,8 @@ if __name__ == "__main__":
         5 = esegui ETL products
         6 = esegui ETL orders
         7 = esegui ETL order_products
-        8 = Apri Jupyter per eseguire una prima l'analisi dei dati
+        8 = esegui pulizia record degli ordini spediti senza data di arrivo consegna
+        9 = Apri Jupyter per eseguire una prima l'analisi dei dati
         0 = esci dal programma
         \n\nComando: """)
         if risposta == "1":
@@ -47,6 +47,8 @@ if __name__ == "__main__":
             df_orders_products = orders_products.transform(df_orders_products)
             orders_products.load(df_orders_products)
         elif risposta == "8":
+            orders_products.delete_invalid_orders()
+        elif risposta == "9":
             print("Avvio Jupyter Notebook...")
             try:
                 subprocess.run(["jupyter", "notebook"], check=True)

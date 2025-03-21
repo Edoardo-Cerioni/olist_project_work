@@ -60,7 +60,7 @@ def load(df):
                 domanda = input("Vuoi sostituire la tabella? SI NO(aggiunge i valori della tabella a quella originale) ").strip().upper()
                 if domanda == "SI":
                     # cancellare tabella se risponde si
-                    sql_delete = """DROP TABLE orders"""
+                    sql_delete = """DROP TABLE orders CASCADE"""
                     cur.execute(sql_delete)
                     conn.commit()
                     print("ricreo tabella orders")
@@ -74,5 +74,13 @@ def load(df):
             """
             common.caricamento_barra(df, cur, sql)
 
-
             conn.commit()
+
+            sql = """UPDATE orders SET delivered_timestamp = null 
+            WHERE EXTRACT (YEAR FROM delivered_timestamp) = 48113;"""
+
+            cur.execute(sql)
+            conn.commit()
+
+
+
