@@ -4,6 +4,7 @@ import src.customers as customers
 import src.categories_byAda as categories
 import src.products_byGabri as products
 import src.orders_byGabri as orders
+import src.sellers as sellers
 import src.orders_productsbyGio as orders_products
 
 
@@ -17,9 +18,10 @@ if __name__ == "__main__":
         4 = esegui ETL categories
         5 = esegui ETL products
         6 = esegui ETL orders
-        7 = esegui ETL order_products
-        8 = esegui pulizia record degli ordini spediti senza data di arrivo consegna
-        9 = Apri Jupyter per eseguire una prima l'analisi dei dati
+        7 = esegui ETL sellers
+        8 = esegui ETL order_products
+        9 = esegui pulizia record degli ordini spediti senza data di arrivo consegna
+        10 = Apri Jupyter per eseguire una prima l'analisi dei dati
         0 = esci dal programma
         \n\nComando: """)
         if risposta == "1":
@@ -43,12 +45,16 @@ if __name__ == "__main__":
             df_orders = orders.transform(df_orders)
             orders.load(df_orders)
         elif risposta == "7":
+            df_sellers = sellers.extract()
+            df_sellers = sellers.transform(df_sellers)
+            sellers.load(df_sellers)
+        elif risposta == "8":
             df_orders_products = orders_products.extract()
             df_orders_products = orders_products.transform(df_orders_products)
             orders_products.load(df_orders_products)
-        elif risposta == "8":
-            orders_products.delete_invalid_orders()
         elif risposta == "9":
+            orders_products.delete_invalid_orders()
+        elif risposta == "10":
             print("Avvio Jupyter Notebook...")
             try:
                 subprocess.run(["jupyter", "notebook"], check=True)

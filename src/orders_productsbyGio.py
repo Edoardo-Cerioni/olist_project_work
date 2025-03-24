@@ -46,7 +46,7 @@ def load(df):
             fk_order character varying,
             order_item INTEGER,
             fk_product character varying,
-            seller_id character varying,
+            fk_seller character varying,
             price NUMERIC(10,2),
             freight NUMERIC(10,2),
             last_updated TIMESTAMP,
@@ -54,6 +54,8 @@ def load(df):
             REFERENCES orders(pk_order),
             FOREIGN KEY(fk_product)
             REFERENCES products(pk_product)
+            FOREIGN KEY(fk_seller)
+            REFERENCES sellers(pk_seller)
             );"""
 
 
@@ -74,15 +76,25 @@ def load(df):
 
 
             sql = """
-            INSERT INTO orders_products (fk_order, order_item, fk_product, seller_id, price, freight,last_updated)
-            VALUES (%s, %s, %s, %s, %s, %s , %s)
+            INSERT INTO orders_products (fk_order, order_item, fk_product, fk_seller, price, freight,last_updated)
+            VALUES (%s, %s, %s, %s, %s, %s, %s) 
+            ON CONFLICT (fk_order, order_item)
+            DO UPDATE SET
+            fk_product = EXCLUDED.fk_product,
+            fk_seller = EXCLUDED.fk_seller,
+            price = EXCLUDED.price,
+            freight = EXCLUDED.freight,
+            last_updated = EXCLUDED.last_updated
             """
             common.caricamento_barra(df, cur, sql)
 
             conn.commit()
+
+"""
+
             #except psycopg.OperationalError as e:
                 #print(f"Error connecting to database: {e}")
-
+"""
 
 def delete_invalid_orders():
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
@@ -106,6 +118,7 @@ def delete_invalid_orders():
 
 
             conn.commit()
+
 
 if __name__ == "__main__":
     main()

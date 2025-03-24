@@ -36,7 +36,7 @@ def load(df):
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
         with conn.cursor() as cur:
 
-            # TODO fk_category VARCHAR da mettere INTEGER
+
             sql = """
             CREATE TABLE products (
             pk_product VARCHAR PRIMARY KEY,
