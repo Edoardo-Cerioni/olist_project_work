@@ -4,7 +4,10 @@
 .vscode/
 .vs/
 src/__pycache__
+images/
 main_masterclass.py
+main2.py
+
 
 # MacOS
 .DS_Store
