@@ -4,6 +4,7 @@ import os
 import  src.common as common
 import datetime
 import pandas as pd
+from tkinter import filedialog
 
 load_dotenv()
 host = os.getenv("host")
@@ -14,19 +15,23 @@ port = os.getenv("port")
 
 
 def extract():
-    print("questo è il metodo EXTRACT per sellers")
-    df = common.read_file()
+    print("--EXTRACT sellers--")
+    csv_file_path = filedialog.askopenfilename(
+        title="Select csv file (.csv)",
+        filetypes=((" Files", "*.csv"), ("All Files", "*.*"))
+    )
+    df = pd.read_csv(csv_file_path)
     return df
 
 def transform(df):
-    print("questo è il metodo TRANSFORM per sellers")
+    print("--TRANSFORM sellers--")
     df = common.dropduplicates(df)
     df = common.checkNull(df,["seller_id"])
     common.save_processed(df)
     return df
 
 def load(df):
-    print("questo è il metodo LOAD per sellers")
+    print("--LOAD sellers--")
 
     df["last_updated"] = datetime.datetime.now().isoformat(sep=" ", timespec="seconds")
 

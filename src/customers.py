@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 import os
 import  src.common as common
 import datetime
-
+from tkinter import filedialog
+import pandas as pd
 
 load_dotenv()
 host = os.getenv("host")
@@ -17,12 +18,17 @@ port = os.getenv("port")
 
 
 def extract():
-    print("questo è il metodo EXTRACT per costumers")
-    df = common.read_file()
+    print("--EXTRACT customers--")
+#   df = common.read_file()
+    csv_file_path = filedialog.askopenfilename(
+        title="Select csv file (.csv)",
+        filetypes=((" Files", "*.csv"), ("All Files", "*.*"))
+    )
+    df = pd.read_csv(csv_file_path)
     return df
 
 def transform(df):
-    print("questo è il metodo TRANSFORM per costumers")
+    print("--TRANSFORM customers--")
     df = common.dropduplicates(df)
     df = common.checkNull(df,["customer_id"])
     df = common.format_string(df, ["region", "city"])
@@ -31,7 +37,7 @@ def transform(df):
     return df
 
 def load(df):
-    print("questo è il metodo LOAD per customers")
+    print("--LOAD customers--")
     df["last_updated"] = datetime.datetime.now().isoformat(sep=" ", timespec="seconds")
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
         with conn.cursor() as cur:

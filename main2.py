@@ -4,11 +4,11 @@ from tkinter import messagebox
 import pyfiglet
 import src.common as common
 import src.customers as customers
-import src.categories_byAda as categories
-import src.products_byGabri as products
-import src.orders_byGabri as orders
+import src.categories as categories
+import src.products as products
+import src.orders as orders
 import src.sellers as sellers
-import src.orders_productsbyGio as orders_products
+import src.orders_products as orders_products
 import matplotlib.pyplot as plt
 import pandas as pd
 import subprocess
