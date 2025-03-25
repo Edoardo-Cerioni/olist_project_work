@@ -122,7 +122,7 @@ print(ascii_art)
 # Creazione della finestra principale
 root = tk.Tk()
 root.title("Project Work - Data Engineer tools set")
-root.geometry("400x500")  # Dimensioni finestra
+root.geometry("450x550")  # Dimensioni finestra
 root.configure(bg="#3498DB") #sfondo azzurro
 
 # Creazione dei pulsanti e delle etichette con colori personalizzati
