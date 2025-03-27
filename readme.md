@@ -1,127 +1,73 @@
-## TITOLO
-# esempio
-
-* elenco
-* puntato
-
-**Grassetto**
-_Corsivo_
-qui tutte le istruzioni 
-
-**Tabelle**
-
-_costumers_
-- pk_customer VARCHAR   
-- region VARCHAR
-- city VARCHAR
-- cap VARCHAR
-
-_categories_
-- pk_category SERIAL
-- name_eng VARCHAR
-- name_it VARCHAR
-
-_products_
-- pk_product VARCHAR
-- fk_category INTGER
-- name_length INTEGER (errore ortografico)
-- description_length INTEGER
-- imgs_qty INTEGER
-
-_orders_
-- pk_order VARCHAR
-- fk_costumer VARCHAR
-- status VARCHAR
-- purchase_timestamp TIMESTAMP
-- delivered_timestamp TIMESTAMP
-- estimated_date DATE
-
-_sellers_( in forse magari venerdì)
-- pk_seller VARCHAR
-- region VARCHAR
-
-_orders_products_ (prodotti per ciascun ordine)
-- pk_order_product SERIAL
-- fk_order VARCHAR
-- fk_product VARCHAR
-- fk_seller VARCHAR
-- price FLOAT
-- freight (costo spedizione) FLOAT
-
-FOREIGN KEY(fk_order_id)
-REFERENCES olist_it_orders(pk_order_id),
-FOREIGN KEY(fk_product_id)
-REFERENCES olist_it_products(pk_product_id),
+## Project work Olist - Data Engineer
 
 
-## Todo
-19-20 marzo
--riaggiornare etl di customers_cap con customers_cap2 OK
+## Descrizione
+In questo progetto sono stati sviluppati gli ETL (Extract, Transform, Load) per la gestione e l'elaborazione dei dati relativi a clienti, categorie, prodotti, ordini e venditori. Include anche un'interfaccia grafica per facilitare l'esecuzione delle operazioni.
 
-- etl dei vari file csv OK
-- fare il push di tutto il lavoro una volta finito e comunicarlo alla squadra OK
+## Funzionalità
+- **ETL per diversi dataset**: clienti, categorie, prodotti, ordini, venditori e relazioni tra ordini e prodotti.
+- **Formattazione e integrazione dati**: gestione delle regioni e associazione città-regione.
+- **Anteprima con Jupyter Notebook**: permette di aprire file `.ipynb` direttamente dall'interfaccia.
+- **Integrazione con Power BI**: facilita l'apertura di progetti Power BI `.pbix` per l'analisi dei dati.
 
-- pensare a qualche idea carina da implementare eventualmente
+## Requisiti
+- **Python 3.x**
+- Librerie necessarie installabili con:
+  ```
+  pip install -r requirements.txt
+  ```
+- **Jupyter Notebook** (se si desidera aprire file `.ipynb`)
+- **Power BI Desktop** (se si intende aprire file `.pbix` altrimenti visionare il pdf)
 
+## Installazione
+1. Clonare il repository o scaricare i file.
+   ```bash
+   git clone <repository-url>
+   ```
+2. Installare moduli:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Avviare l'applicazione:
+   ```bash
+   python main.py
+   ```
 
-- cosa chiedere a Barbara? 
-dove reperire esempi di lavoro ben fatto?
-quali grafici è più opportuno usare?
+## Utilizzo
+1. Avviare `main.py` per aprire l'interfaccia grafica.
+2. Selezionare le operazioni ETL disponibili.
+3. Per l'analisi dati, utilizzare i pulsanti per aprire Jupyter Notebook o Power BI.
 
+## Struttura del progetto
+```
+project-work/
+│── main.py                 # Interfaccia grafica e gestione operazioni ETL
+│── requirements.txt        # Dipendenze del progetto
+│── src/
+│   ├── common.py           # Funzioni comuni
+│   ├── etl/
+│   │   ├── customers.py    # ETL per clienti
+│   │   ├── categories.py   # ETL per categorie
+│   │   ├── products.py     # ETL per prodotti
+│   │   ├── orders.py       # ETL per ordini
+│   │   ├── sellers.py      # ETL per venditori
+│   │   ├── orders_products.py  # ETL per relazioni ordini-prodotti
+│── images_pw/              # Risorse grafiche per la GUI
+```
 
-21 marzo
-- postsgreSQL
-Definisci le relazioni tra le tabelle
-Customers ↔ Orders (pk_customer → fk_customer)
-Orders ↔ Orders_Products (pk_order → fk_order)
-Orders_Products ↔ Products (fk_product → pk_product)
-Orders_Products ↔ Sellers (fk_seller → pk_seller)
-Products ↔ Categories (fk_category → pk_category)
-
-22-23-24 marzo
-- jupyter(forse)
-- powerBI
-
-
-METRICHE PRINCIPALI
-## Analisi delle vendite
-
-Fatturato totale: SUM(orders_products.price)
-Costo medio di spedizione: AVG(orders_products.freight)
-Numero ordini per stato: COUNT(orders.status)
-
-## Prodotti e Categorie
-
-Numero di prodotti per categoria
-Media lunghezza nome/descrizione prodotti
-Numero di immagini per prodotto (imgs_qty)
-
-## Analisi Geografica
-
-Ordini per regione/città
-Vendite per regione dei seller
-
-## Performance di Consegna
-
-Tempo medio di consegna: DATEDIFF(delivered_timestamp, purchase_timestamp, DAY)
-Percentuale di ritardi: confronto tra estimated_date e delivered_timestamp
-
-
-25 marzo
-- organizzare presentazione
-Layout consigliato da chatgpt
-Mappa interattiva: ordini per regione/città.
-Grafico a barre: categorie più vendute.
-KPI cards: ricavi totali, numero ordini, % ritardi consegne.
-Timeline interattiva: numero di ordini nel tempo.
-Tabella dettagliata: informazioni su ordini e venditori.
+## Autore
+- Edoardo Cerioni
+https://www.linkedin.com/in/edoardo-cerioni-322b46207/
 
 
 
-## IDEE
-- creare un metodo dinamico in grado di sistemare e aggiornare tutte le categorie seguendo modello amazon ecc
-- menu di ricerca dei prodotti e delle categorie
-- vendite in proporzione alla popolazione (pro capite...percentuale per regione ecc)
-- fare format string su product e categories
+
+
+
+
+
+
+
+
 
 

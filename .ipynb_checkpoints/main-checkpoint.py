@@ -1,11 +1,11 @@
 import subprocess
 import src.common as common
-import src.customers as customers
-import src.categories as categories
-import src.products as products
-import src.orders as orders
+import src.etl.customers as customers
+import src.etl.categories as categories
+import src.etl.products as products
+import src.etl.orders as orders
 
-import src.orders_products as orders_products
+import src.etl.orders_products as orders_products
 
 
 
