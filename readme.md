@@ -57,7 +57,7 @@ project-work/
 
 ## Autore
 - Edoardo Cerioni
-https://www.linkedin.com/in/edoardo-cerioni-322b46207/
+
 
 
 
