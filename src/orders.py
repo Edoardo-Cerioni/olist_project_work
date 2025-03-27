@@ -63,20 +63,28 @@ def load(df):
             except psycopg.errors.DuplicateTable as ex:
                 conn.commit()
                 print(ex)
-                domanda = input("Vuoi sostituire la tabella? SI NO(aggiunge i valori della tabella a quella originale) ").strip().upper()
-                if domanda == "SI":
+                domanda = input("Do you want to replace the table? YES/NO(updates the table) ").strip().upper()
+                if domanda == "YES":
                     # cancellare tabella se risponde si
                     sql_delete = """DROP TABLE orders CASCADE"""
                     cur.execute(sql_delete)
                     conn.commit()
-                    print("ricreo tabella orders")
+                    print("Recreating the orders table")
                     cur.execute(sql)
 
             sql = """
             INSERT INTO orders ( 
             pk_order, fk_customer, status, purchase_timestamp, delivered_timestamp, estimated_date, last_updated
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (pk_order) DO NOTHING
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (pk_order) 
+            DO UPDATE SET 
+            fk_customer = EXCLUDED.fk_customer,
+            status = EXCLUDED.status,
+            purchase_timestamp = EXCLUDED.purchase_timestamp,
+            delivered_timestamp = EXCLUDED.delivered_timestamp,
+            estimated_date = EXCLUDED.estimated_date,
+            last_updated = EXCLUDED.last_updated;
             """
             common.caricamento_barra(df, cur, sql)
 

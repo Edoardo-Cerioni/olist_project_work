@@ -59,13 +59,13 @@ def load(df):
             except psycopg.errors.DuplicateTable as ex:
                 conn.commit()
                 print(ex)
-                domanda = input("Vuoi sostituire la tabella? SI NO(aggiunge i valori della tabella a quella originale) ").strip().upper()
-                if domanda == "SI":
+                domanda = input("Do you want to replace the table? YES/NO(updates the table) ").strip().upper()
+                if domanda == "YES":
                     # cancellare tabella se risponde si
                     sql_delete = """DROP TABLE products CASCADE"""
                     cur.execute(sql_delete)
                     conn.commit()
-                    print("ricreo tabella products")
+                    print("Recreating the products table")
                     cur.execute(sql)
 
             sql = """
@@ -81,13 +81,6 @@ def load(df):
 
             conn.commit()
 
-"""def dump():
-    with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
-        with conn.cursor() as cur:
-            sql = "SELECT * FROM products"
-            cur.execute(sql)
-            df = pd.DataFrame(cur, columns = ["pk_product", "fk_category", "name_lenght", "description_lentgh","imgs_qty", "last_updated"])
-            df = df.to_csv("../data/processed/products_processed.csv", index = False)"""
 
 
 if __name__ == "__main__":

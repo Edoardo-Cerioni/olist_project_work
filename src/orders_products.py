@@ -15,6 +15,7 @@ password = os.getenv("password")
 port = os.getenv("port")
 
 
+
 def extract():
     print("--EXTRACT orders products--")
     csv_file_path = filedialog.askopenfilename(
@@ -26,8 +27,8 @@ def extract():
 
 def transform(df):
     print("--TRANSFORM orders products--")
-    df = common.checkNull(df, ["order_id","product_id"])#seller_id da aggiungere x sellers
     df = common.dropduplicates(df)
+    df = common.checkNull(df, ["order_id","product_id"])#seller_id da aggiungere x sellers
     common.save_processed(df)
     return df
 
@@ -39,20 +40,19 @@ def load(df):
             sql = """
             CREATE TABLE orders_products (
             pk_order_product SERIAL PRIMARY KEY,
-            fk_order character varying,
-            order_item INTEGER,
-            fk_product character varying,
-            fk_seller character varying,
+            fk_order VARCHAR UNIQUE,
+            order_item INTEGER UNIQUE,
+            fk_product VARCHAR,
+            fk_seller VARCHAR,
             price NUMERIC(10,2),
             freight NUMERIC(10,2),
             last_updated TIMESTAMP,
-            FOREIGN KEY(fk_order)
-            REFERENCES orders(pk_order),
-            FOREIGN KEY(fk_product)
-            REFERENCES products(pk_product)
-            FOREIGN KEY(fk_seller)
-            REFERENCES sellers(pk_seller)
+            FOREIGN KEY (fk_order) REFERENCES orders(pk_order),
+            FOREIGN KEY (fk_product) REFERENCES products(pk_product),
+            FOREIGN KEY (fk_seller) REFERENCES sellers(pk_seller)
             );"""
+
+
 
 
             try:
@@ -61,36 +61,24 @@ def load(df):
             except psycopg.errors.DuplicateTable as ex:
                 conn.commit()
                 print(ex)
-                domanda = input("Vuoi sostituire la tabella? SI | NO (aggiunge i valori della tabella a quella originale) ").strip().upper()
-                if domanda == "SI":
+                domanda = input("Do you want to replace the table? YES | NO(add records from the new CSV) ").strip().upper()
+                if domanda == "YES":
                     # cancellare tabella se risponde si
                     sqldelete = """DROP TABLE orders_products CASCADE;"""
                     cur.execute(sqldelete)
                     conn.commit()
-                    print("Recreating orders_products table")
+                    print("Recreating the orders_products table")
                     cur.execute(sql)
 
-
             sql = """
-            INSERT INTO orders_products (fk_order, order_item, fk_product, fk_seller, price, freight,last_updated)
-            VALUES (%s, %s, %s, %s, %s, %s, %s) 
-            ON CONFLICT (fk_order, order_item)
-            DO UPDATE SET
-            fk_product = EXCLUDED.fk_product,
-            fk_seller = EXCLUDED.fk_seller,
-            price = EXCLUDED.price,
-            freight = EXCLUDED.freight,
-            last_updated = EXCLUDED.last_updated
+            INSERT INTO orders_products (fk_order, order_item, fk_product, fk_seller, price, freight, last_updated)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT DO NOTHING
             """
             common.caricamento_barra(df, cur, sql)
 
             conn.commit()
-
-"""
-
-            #except psycopg.OperationalError as e:
-                #print(f"Error connecting to database: {e}")
-"""
+            delete_invalid_orders()
 
 def delete_invalid_orders():
     with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
@@ -115,7 +103,7 @@ def delete_invalid_orders():
 
             conn.commit()
 
-def main():
+"""def main():
     print("questo è il metodo Main")
     df = extract()
     print("file di partenza")
@@ -127,4 +115,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()"""

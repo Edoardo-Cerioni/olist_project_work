@@ -1,3 +1,4 @@
+import shutil
 import tkinter as tk
 from tkinter import messagebox
 import src.common as common
@@ -11,6 +12,8 @@ import subprocess
 from tkinter import filedialog
 from PIL import Image, ImageTk
 import pyfiglet
+import platform
+import os
 
 
 # ASCII Art all'avvio
@@ -56,7 +59,8 @@ def etl_order_products():
     df = orders_products.extract()
     df = orders_products.transform(df)
     orders_products.load(df)
-    show_message("Loading Order Products completed!")
+    orders_products.delete_invalid_orders()
+    show_message("Loading Orders Products completed!")
 
 def format_regions():
     common.format_region()
@@ -66,51 +70,112 @@ def integrate_city_region():
     customers.complete_city_region()
     show_message("City-region integration completed!")
 
+
 def open_jupyter_notebook():
-    # Apre una finestra di dialogo per selezionare un file .ipynb (Jupyter Notebook)
+    # Crea una finestra root temporanea che viene immediatamente nascosta
+    root = tk.Tk()
+    root.withdraw()
+
+    # Determina il sistema operativo
+    current_os = platform.system()
+
+    # Seleziona il notebook
     notebook_file_path = filedialog.askopenfilename(
         title="Select Jupyter Notebook file (.ipynb)",
-        filetypes=(("Jupyter Notebook Files", "*.ipynb"), ("All Files", "*.*"))
+        filetypes=(
+            ("Jupyter Notebook Files", "*.ipynb"),
+            ("All Files", "*.*")
+        )
     )
 
-    if notebook_file_path:  # Se è stato selezionato un file
-        print(f"Starting Jupyter Notebook with: {notebook_file_path}")
-
-        # Percorso dell'eseguibile di Jupyter Notebook
-        jupyter_path = r"C:\Users\edoce\AppData\Local\Programs\Python\Python313\Scripts\jupyter-notebook.exe"  # Modifica il percorso in base alla tua installazione
-
-        try:
-            # Esegui Jupyter Notebook con il file selezionato
-            subprocess.run([jupyter_path, notebook_file_path], check=True)
-        except FileNotFoundError:
-            print("Error: Unable to find Jupyter Notebook. Check the path.")
-        except subprocess.CalledProcessError:
-            print("Error opening the Jupyter Notebook file.")
-    else:
+    if not notebook_file_path:
         print("No file selected.")
+        return
+
+    # Trova l'eseguibile di Jupyter
+    try:
+        # Cerca l'eseguibile Jupyter
+        jupyter_path = shutil.which('jupyter-notebook') or shutil.which('jupyter')
+
+        if not jupyter_path:
+            # Se non trova l'eseguibile, chiedi all'utente di selezionarlo
+            jupyter_path = filedialog.askopenfilename(
+                title="Select Jupyter Executable",
+                filetypes=(
+                    ("Executable Files", "*"),
+                    ("All Files", "*.*")
+                )
+            )
+
+        if not jupyter_path:
+            print("No Jupyter executable found.")
+            return
+
+        # Preparazione del comando per aprire il notebook
+        if current_os == "Windows":
+            # Su Windows
+
+            subprocess.run([jupyter_path, notebook_file_path], check=True)
+        elif current_os == "Darwin":  # macOS
+            # Su macOS
+            subprocess.run([jupyter_path, notebook_file_path], check=True)
+        else:
+            print("Unsupported operating system")
+
+    except Exception as e:
+        print(f"Error launching Jupyter Notebook: {e}")
 
 def open_powerbi_project():
+    # Crea una finestra root temporanea che viene immediatamente nascosta
+    root = tk.Tk()
+    root.withdraw()
+    # Determina il sistema operativo
+    current_os = platform.system()
+    # Seleziona l'eseguibile di PowerBI
+    percorso_pdf = "powerBI_files/project_work_generation_pbi.pdf"
+
     # Apre una finestra di dialogo per selezionare un file .pbix
     pbix_file_path = filedialog.askopenfilename(
         title="Select PowerBI file (.pbix)",
         filetypes=(("Power BI Files", "*.pbix"), ("All Files", "*.*"))
     )
 
-    if pbix_file_path:  # Se è stato selezionato un file
-        print(f"Starting Power BI with: {pbix_file_path}")
-
-        # Percorso dell'eseguibile di Power BI Desktop
-        powerbi_path = r"C:\Users\edoce\AppData\Local\Microsoft\WindowsApps\PBIDesktopStore.exe"
-
-        try:
-            # Esegui Power BI con il file selezionato
-            subprocess.run([powerbi_path, pbix_file_path], check=True)
-        except FileNotFoundError:
-            print("Error: Unable to find Power BI. Check the path.")
-        except subprocess.CalledProcessError:
-            print("Error opening the Power BI file.")
-    else:
+    if not pbix_file_path:
         print("No file selected.")
+        return
+
+    try:
+        if current_os == "Windows":
+            powerbi_path = filedialog.askopenfilename(
+            title="Select PBIDesktopstore.exe or PBIDesktop.exe",
+            filetypes=(
+                ("Executable Files", ".exe"),
+                ("All Files", "*.*")
+            )
+        )
+            print(f"Starting Power BI with executable: {powerbi_path}")
+            print(f"Opening Power BI file: {pbix_file_path}")
+            subprocess.run([powerbi_path, pbix_file_path], check=True)
+
+        elif current_os == "Darwin":
+            subprocess.call(('open', percorso_pdf))
+
+        else:
+            print("opening pdf")
+            if current_os == "Windows":
+                os.startfile(percorso_pdf)
+            else:
+                print("Open the PowerBI folder inside the project and open the PDF file")
+
+    except Exception as e:
+        print(f"Error launching PowerBI: {e}")
+    except FileNotFoundError:
+        print("Error: Unable to find the specified PowerBI executable.")
+    except subprocess.CalledProcessError:
+            print("Error opening the Power BI file.")
+
+
+
 
 # Funzione per chiudere il programma
 def exit_program():
@@ -123,7 +188,7 @@ root.geometry("450x600")  # Dimensioni finestra
 root.configure(bg="#3498DB")  # Sfondo azzurro
 
 # Caricamento dell'immagine di sfondo
-background_path = r"C:\Users\edoce\Desktop\Studio\generation_italy_programmi_e_doc\ProgettiPython\olistit_pw\images\sfondo_display.png"  # Percorso dell'immagine di sfondo
+background_path = "images_pw/sfondo_display.png"  # Percorso dell'immagine di sfondo
 bg_image = Image.open(background_path)
 bg_image = bg_image.resize((450, 600))  # Ridimensiona l'immagine per adattarla alla finestra
 bg_photo = ImageTk.PhotoImage(bg_image)
@@ -136,6 +201,7 @@ canvas.pack(fill="both", expand=True)
 canvas.create_image(0, 0, image=bg_photo, anchor="nw")
 
 canvas.create_text(227, 52, text="Select an operation:", font=("Arial", 12, "bold"), fill="black")
+#aggiunto per migliorare visibilità
 canvas.create_text(225, 50, text="Select an operation:", font=("Arial", 12, "bold"), fill="white")
 
 
@@ -150,9 +216,9 @@ etl_buttons = [
     ("Loading Products", etl_products),
     ("Loading Orders", etl_orders),
     ("Loading Sellers", etl_sellers),
-    ("Loading Order Products", etl_order_products),
-    ("Format Regions", format_regions),
-    ("Integrate City-Region", integrate_city_region)
+    ("Loading Orders Products", etl_order_products),
+    ("Format Regions (Customers e Sellers)", format_regions),
+    ("Integrate City-Region (Customers)", integrate_city_region)
 ]
 
 for text, command in etl_buttons:
@@ -162,18 +228,18 @@ for text, command in etl_buttons:
 y_start += 20
 
 # Pulsanti con immagini
-image_path = r"C:\Users\edoce\Desktop\Studio\generation_italy_programmi_e_doc\ProgettiPython\olistit_pw\images\previewdatainjupyter.png"  # Percorso del tuo logo
+image_path = "images_pw/previewdatainjupyter.png"  # Percorso del tuo logo
 logo = Image.open(image_path)
 logo_tk = ImageTk.PhotoImage(logo)
 jupyter_button = tk.Button(root, image=logo_tk, command=open_jupyter_notebook)
 canvas.create_window(225, y_start, window=jupyter_button)
 y_start += 60
 
-image_path2 = r"C:\Users\edoce\Desktop\Studio\generation_italy_programmi_e_doc\ProgettiPython\olistit_pw\images\openprjct_powerbi.png"  # Percorso del tuo logo
+image_path2 = "images_pw/openprjct_powerbi.png"  # Percorso del tuo logo
 logo2 = Image.open(image_path2)
 logo2_tk = ImageTk.PhotoImage(logo2)
-powerbi_button = tk.Button(root, image=logo2_tk, command=open_powerbi_project)
-canvas.create_window(225, y_start, window=powerbi_button)
+power_bi_button = tk.Button(root, image=logo2_tk, command=open_powerbi_project)
+canvas.create_window(225, y_start, window=power_bi_button)
 y_start += 60
 
 # Pulsante Exit

@@ -11,19 +11,18 @@ import src.orders_products as orders_products
 if __name__ == "__main__":
     risposta = ""
     while risposta != "0":
-        risposta = input("""Inserisci un comando 
-        1 = esegui ETL costumers
-        2 = esegui integrazione dei dati regione e città
-        3 = formatta nomi regioni per PowerBI
-        4 = esegui ETL categories
-        5 = esegui ETL products
-        6 = esegui ETL orders
-        7 = esegui ETL sellers
-        8 = esegui ETL order_products
-        9 = esegui pulizia record degli ordini spediti senza data di arrivo consegna
-        10 = Apri Jupyter per eseguire una prima l'analisi dei dati
-        0 = esci dal programma
-        \n\nComando: """)
+        risposta = input("""Enter a command 
+        1 = run ETL for customers
+        2 = run integration of region and city data
+        3 = format region names for PowerBI
+        4 = run ETL for categories
+        5 = run ETL for products
+        6 = run ETL for orders
+        7 = run ETL for sellers
+        8 = run ETL for order_products
+        9 = Open Jupyter to perform initial data analysis
+        0 = exit the program
+        \n\nCommand: """)
         if risposta == "1":
             df_customers = customers.extract()
             df_customers = customers.transform(df_customers)
@@ -52,18 +51,17 @@ if __name__ == "__main__":
             df_orders_products = orders_products.extract()
             df_orders_products = orders_products.transform(df_orders_products)
             orders_products.load(df_orders_products)
-        elif risposta == "9":
             orders_products.delete_invalid_orders()
-        elif risposta == "10":
-            print("Avvio Jupyter Notebook...")
+        elif risposta == "9":
+            print("Starting Jupyter Notebook...")
             try:
                 subprocess.run(["jupyter", "notebook"], check=True)
             except subprocess.CalledProcessError:
-                print("Errore nell'avvio di Jupyter Notebook. Assicurati che Jupyter sia installato correttamente.")
+                print("Error starting Jupyter Notebook. Ensure that Jupyter is installed correctly.")
         elif risposta == "0":
-            print("Uscita dal programma...")
+            print("Exiting the program...")
             exit()
         else:
-            print("\n\nOpzione non valida. Riprova.\n\n")
+            print("\n\nInvalid option. Please try again.\n\n")
 
 

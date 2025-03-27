@@ -1,4 +1,3 @@
-import datetime
 import pandas as pd
 import src.common as common
 import os
@@ -27,6 +26,7 @@ def transform(df):
     print("--TRANSFORM categories--")
     df = common.dropduplicates(df)
     df = common.checkNull(df, ["pk_category"])
+    common.save_processed(df)
     return df
 
 def load(df):
@@ -48,28 +48,24 @@ def load(df):
             except psycopg.errors.DuplicateTable as ex:
                 conn.commit()
                 print(ex)
-                domanda = input("Desideri cancellare questa tabella? SI/NO").upper()
-                if domanda == "SI":
+                domanda = input("Do you want to replace the table? YES/NO(updates the table) ").upper()
+                if domanda == "YES":
                     sql_delete ="""DROP TABLE categories CASCADE"""
                     cur.execute(sql_delete)
                     conn.commit()
-                    print("Ricreando la tabella categories")
+                    print("Recreating the categories table")
                     cur.execute(sql)
             sql = """
             INSERT INTO categories (
             pk_category, name)
-            VALUES ( %s, %s)
+            VALUES ( %s, %s) 
+            ON CONFLICT (pk_category) 
+            DO UPDATE SET name = EXCLUDED.name
             """
             common.caricamento_barra(df, cur, sql)
             conn.commit()
 
-"""def dump():
-    with psycopg.connect(host=host, dbname=dbname, user=user, password=password, port=port) as conn:
-        with conn.cursor() as cur:
-            sql = "SELECT DISTINCT macro_category_id, macro_category_name_english FROM categories"
-            cur.execute(sql)
-            df = pd.DataFrame(cur, columns= ["pk_category", "name"])
-            df.to_csv("../data/processed/categories_clean.csv", index = False)"""
+
 
 
 if __name__ == "__main__":

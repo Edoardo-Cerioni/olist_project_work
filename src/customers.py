@@ -55,13 +55,13 @@ def load(df):
             except psycopg.errors.DuplicateTable as ex:
                 conn.commit()
                 print(ex)
-                domanda = input("Vuoi sostituire la tabella? SI | NO (aggiunge i valori della tabella a quella originale) ").strip().upper()
-                if domanda == "SI":
+                domanda = input("Do you want to replace the table? YES/NO(updates the table) ").strip().upper()
+                if domanda == "YES":
                     # cancellare tabella se risponde si
                     sqldelete = """DROP TABLE customers CASCADE"""
                     cur.execute(sqldelete)
                     conn.commit()
-                    print("ricreo tabella costumers")
+                    print("Recreating the customers table")
                     cur.execute(sql)
 
             sql = """
